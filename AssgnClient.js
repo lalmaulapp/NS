@@ -17,7 +17,7 @@
  */
 function clientFieldChanged(type, name, linenum){
 if ( type == 'assignee')
-{
+{      nlapiLogExecution('DEBUG','name'+name) ;
        if (name =='resource')
       {
            var restype = nlapiLookupField('entity',nlapiGetCurrentLineItemValue('assignee','resource'),'type');

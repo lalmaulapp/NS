@@ -1,0 +1,159 @@
+ 
+ 
+ 
+                                             
+
+  Execution Log    Local Variables    Watches    Evaluate Expressions    Break Points    
+ 
+ 
+   
+ 
+
+Call Stack     
+ 
+x = null
+proj = {nlobjDeferredDynamicRecord} job (id=328)
+id = {number} 328
+recordType = {string} job
+isdynamic = {boolean} false
+fields = {object}  
+_eml_nkey_ = {number} 0
+actualtime = {string} 658:30
+allowallresourcesfortasks = {string} T
+allowexpenses = {string} T
+allowtasktimeforrsrcalloc = {string} F
+allowtime = {string} T
+applyprojectexpensetypetoall = {string} T
+autoname = {string} T
+baserecordtype = {string} job
+bbudgetheader = {string} month
+bbudgetheadercount = {number} 7
+bbudgetmatrixfields = {string} amount
+bbudgetmonthids = {string} 531532533534535536537
+bbudgetshowcalculatedlines = {string} F
+bbudgetusecalculatedvalues = {string} T
+calculatedenddate = {string} 9/26/2014
+cbudgetheader = {string} month
+cbudgetheadercount = {number} 7
+cbudgetlaborbudgetfromalloc = {string} F
+cbudgetmatrixfields = {string} amount
+cbudgetmonthids = {string} 531532533534535536537
+cbudgetshowcalculatedlines = {string} F
+cbudgetusecalculatedvalues = {string} T
+chargeamountbilled = {number} 5250.00
+chargeamountholdforbilling = {number} 0.00
+chargeamountpending = {number} 0.00
+chargeamountreadyforbilling = {number} 0.00
+chargeamountremaining = {number} 30750.00
+companyname = {string} Lina-opp-01
+currency = {number} 1
+currencyprecision = {number} 2
+currid = {number} 328
+custentity_pp_proj_ave_bill_rate = {number} 47.62
+custentity_pp_proj_billable_expense = {number} 1000.00
+custentity_pp_proj_dept = {number} 3
+custentity_pp_proj_multiplier = {number} 1
+custentity_pp_proj_net_amt = {number} 4600.00
+custentity_pp_proj_remaning_fund = {number} -4600.0
+custentity_pp_project_opportunity_field = {string} <a href=https://system.na1.netsuite.com/app/accounting/transactions/opprtnty.nl?id=102>Lin...
+custentity_pp_project_target_margin = {string} 50.0%
+custentity_pp_project_unbilled_exp = {string}  
+customform = {number} 11
+datecreated = {string} 3/14/2014 8:56 am
+entityid = {string} Lina-opp-01
+entitystatus = {number} 4
+entitytitle = {string} Lina-opp-01
+entryformquerystring = {string} id=328&e=T&job=T&stage=JOB
+estimatedcostjc = {number} 46925.00
+estimatedgrossprofit = {number} -10925.00
+estimatedgrossprofitpercent = {string} -30.35%
+estimatedrevenuejc = {number} 36000.00
+estimatedtime = {string} 0:00
+estimatedtimeoverride = {string} 756:30
+fxrate = {number} 1.00
+haschildren = {string} F
+hasparent = {string} T
+hasshipping = {string} F
+id = {number} 328
+includecrmtasksintotals = {string} F
+isbasecurrency = {string} T
+isbudgetrebuilding = {string} F
+isexempttime = {string} F
+isinactive = {string} F
+isjob = {string} T
+isproductivetime = {string} T
+isutilizedtime = {string} T
+jobbillingtype = {string} CB
+jobitem = {string}  
+jobprice = {string}  
+kCustomer = {number} 208
+language = {string} en_US
+lastmodifieddate = {string} 8/18/2014 8:17 am
+limittimetoassignees = {string} T
+materializetime = {string} T
+month1 = {string} Mar 2014
+month2 = {string} Apr 2014
+month3 = {string} May 2014
+month4 = {string} Jun 2014
+month5 = {string} Jul 2014
+month6 = {string} Aug 2014
+month7 = {string} Sep 2014
+nameorig = {string} Lina-opp-01
+nldept = {number} 3
+nlloc = {number} 1
+nlrole = {number} 3
+nlsub = {number} 1
+nluser = {number} 28
+nsapiCT = {number} 1408465698529
+origbinactive = {string} F
+origgiveaccess = {string} F
+origsubstatus = {number} 2
+otherrelationships = {number} 328
+parent = {number} 208
+percenttimecomplete = {string} 87.0%
+projectexpensetype = {number} -2
+projecttasks_count = {number} 1
+stage = {string} JOB
+startdate = {string} 5/21/2014
+submitnext_t = {string} custjob
+submitnext_y = {string} Job
+subsidiary = {number} 1
+templatestored = {string} F
+timeremaining = {string} 98:00
+type = {string} custjob
+version = {number} 72
+wfinstances = {string}  
+sublists = {object}  
+bbudget = {object}  
+line 1 = {object}  
+amount[1] = {number} 9450.00
+amount[2] = {number} 8050.00
+amount[3] = {number} 5920.00
+amount[4] = {number} 12580.00
+amount[5] = {number} 0.00
+amount[6] = {number} 0.00
+amount[7] = {number} 0.00
+costcategoryid = {number} 1
+costcategoryname = {string} Labor
+dimension = {number} 1
+iscalculatedline = {string} F
+islinealwayseditable = {string} F
+istotalline = {string} F
+selectline = {string} F
+totalamount = {number} 36000.00
+line 2 = {object}  
+line 3 = {object}  
+line 4 = {object}  
+line 5 = {object}  
+line 6 = {object}  
+line 7 = {object}  
+line 8 = {object}  
+line 9 = {object}  
+cbudget = {object}  
+creditcards = {object}  
+plstatement = {object}  
+recmachcustrecord25 = {object}  
+jobresources = {object}   
+ 
+ 
+ 

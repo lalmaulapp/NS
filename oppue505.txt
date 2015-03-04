@@ -1,0 +1,241 @@
+/**
+ * Module Description
+ * 
+ * Version    Date            Author           Remarks
+ * 1.00       31 Mar 2014     lalmaula
+ *
+ */
+
+/**
+ * The recordType (internal id) corresponds to the "Applied To" record in your script deployment. 
+ * @appliedtorecord recordType
+ *   
+ * @param {String} type Operation types: create, edit, view, copy, print, email
+ * @param {nlobjForm} form Current form
+ * @param {nlobjRequest} request Request object
+ * @returns {Void}
+ */
+function userEventBeforeLoad(type, form, request){
+
+if ( nlapiGetFieldValue('custbody_pp_opp_latest_estimate' ) != null)
+{
+ var filter = new nlobjSearchFilter('tranid', null, 'is', nlapiGetFieldValue('custbody_pp_opp_latest_estimate' )); 
+	 var searchresults = nlapiSearchRecord('estimate', null, filter, null);
+
+nlapiLogExecution('ERROR','in user event before load'+type);
+   var estrec= nlapiLoadRecord('estimate',searchresults[0].getId());
+nlapiLogExecution('ERROR','est number '+nlapiGetFieldValue('custbody_pp_opp_latest_estimate' ) +' id '+ searchresults[0].getId());
+   var click = '<a href=https://system.na1.netsuite.com/app/accounting/transactions/estimate.nl?id='+searchresults[0].getId();
+  nlapiLogExecution('ERROR','url',click);
+    
+   click +='>' +nlapiGetFieldValue('custbody_pp_opp_latest_estimate' ) +  '</a>';      
+ 
+
+    nlapiLogExecution('ERROR','url',click);
+    nlapiSetFieldValue('custbody_pp_opp_latest_estimate',click);
+
+  nlapiLogExecution('DEBUG','about to set x');
+   nlapiSetFieldValue('custbody4', click);
+
+ 
+}
+   
+	
+}
+
+/**
+ * The recordType (internal id) corresponds to the "Applied To" record in your script deployment. 
+ * @appliedtorecord recordType
+ * 
+ * @param {String} type Operation types: create, edit, delete, xedit
+ *                      approve, reject, cancel (SO, ER, Time Bill, PO & RMA only)
+ *                      pack, ship (IF)
+ *                      markcomplete (Call, Task)
+ *                      reassign (Case)
+ *                      editforecast (Opp, Estimate)
+ * @returns {Void}
+ */
+function userEventBeforeSubmit(type){
+ 
+}
+
+/**
+ * The recordType (internal id) corresponds to the "Applied To" record in your script deployment. 
+ * @appliedtorecord recordType
+ * 
+ * @param {String} type Operation types: create, edit, delete, xedit,
+ *                      approve, cancel, reject (SO, ER, Time Bill, PO & RMA only)
+ *                      pack, ship (IF only)
+ *                      dropship, specialorder, orderitems (PO only) 
+ *                      paybills (vendor payments)
+ * @returns {Void}
+ */
+function userEventAfterSubmit(type){
+	nlapiLogExecution('ERROR','In UE after submit of opportunity'+type);
+
+    if (type != 'create')
+    { 
+        //get the old record and the old values
+        var oldRecord = nlapiGetOldRecord(); 
+        var olddept = oldRecord.getFieldValue('department');
+        var oldname = oldRecord.getFieldValue('title');
+        var olddate = oldRecord.getFieldValue('expectedclosedate');
+        var oldstatus = oldRecord.getFieldText('entitystatus');
+        var oldcust = oldRecord.getFieldValue('entity');
+        var oldproj = oldRecord.getFieldValue('job');
+        
+        //get the new record and the new values
+        var newRecord = nlapiLoadRecord('opportunity', nlapiGetRecordId());
+        var newdept = newRecord.getFieldValue('department');
+        var newname = newRecord.getFieldValue('title');
+        var newdate = newRecord.getFieldValue('expectedclosedate');
+        var newproj = newRecord.getFieldValue('job');
+        var newstatus = newRecord.getFieldText('entitystatus');
+        var newcust = newRecord.getFieldValue('entity');
+         var newsalesrep = newRecord.getFieldValue('salesrep');
+        
+         nlapiLogExecution('ERROR','oldproject '+oldproj);
+        
+        nlapiLogExecution('ERROR','new  project '+newproj);
+        if (newproj != null)
+        {
+        nlapiLogExecution('DEBUG','dates '+olddate+newdate);
+        
+    
+    	var project= nlapiLoadRecord('job',newproj);
+    
+    	
+        if (newdept != olddept) 
+            { 
+             project.setFieldValue('custentity_pp_proj_dept',newdept);
+            }
+        if ( newdate != olddate)
+        { 
+        	 nlapiLogExecution('DEBUG','dates  not same ');
+        	 var projstart = new Date(nlapiAddDays(nlapiStringToDate(newdate),21));
+        	 nlapiLogExecution('DEBUG','projstart'+projstart);
+                    project.setFieldValue('startdate',nlapiDateToString(projstart));
+
+           
+                //Check if allocations exist -- if not, don't proceed
+                nlapiLogExecution('DEBUG','project dates have changed in opp user event after submit');
+               //Delete existing resource allocations
+			 var filter = new nlobjSearchFilter('project', null, 'is', project.getId() ); 
+			 var searchresults = nlapiSearchRecord('resourceallocation', null, filter, null);
+			 if (searchresults)
+			{                        var  update_res_alloc ='Y';
+
+				nlapiLogExecution('DEBUG','allocations exist');
+			 for ( var i = 0; searchresults != null && i < searchresults.length; i++ )
+			 {
+			 var searchresult = searchresults[ i ];
+			 nlapiDeleteRecord(searchresults[i].getRecordType(), searchresults[i].getId());
+			 }
+			 
+						
+						} //allocations exist search
+	
+        }
+        if  ( newname != oldname)
+        {
+        	 project.setFieldValue('companyname',newname);
+        	
+        }   
+      
+        if (newstatus == 'Finalize Booking' )
+        	{
+        	project.setFieldText('entitystatus','Awarded');
+ var dept_super = nlapiLookupField('department',newdept,'custrecordpp_er_dept_supervisor' );
+             var dept_super_email =nlapiLookupField('employee',dept_super,'email');
+             var records = new Object();
+             records['entity'] = project.getId();
+             var msg = 'https://system.sandbox.netsuite.com/app/common/entity/custjob.nl?id=';
+             var msgrec = msg.concat(project.getId());
+             var message = 'Please work with Project Accounting to finalize project setup. The project can be accessed at the following link.<a href= ';
+             var msg2 ='>View Record</a>';
+             var x = (message.concat(msgrec)).concat(msg2);
+             nlapiSendEmail(-5, dept_super_email, 'The opportunity '+newname+' has entered Finalize Booking stage',x , null, null,records, null);
+       	    	    
+        	
+        	
+         	}
+
+    if ( newstatus == 'Closed Lost')
+        	{
+                  project.setFieldText('entitystatus','Not Awarded');
+                     }
+                  
+         if ( newstatus == 'Closed Won')
+        	{
+                  project.setFieldText('entitystatus','In Progress');
+                  project.setFieldValue('allowtime','T');
+                                                        
+        	var salesrep_email =nlapiLookupField('employee',newsalesrep,'email');
+        	var msg='https://system.sandbox.netsuite.com/app/accounting/transactions/opprtnty.nl?id=';
+        	var msgrec = msg.concat(newRecord.getId());
+        	var message = 'The opportunity can be accessed at the following link.<a href= ';
+        	var msg2 ='>View Record</a>';
+            var x = (message.concat(msgrec)).concat(msg2);
+        	var records = new Object();
+            records['transaction'] =newRecord.getId();
+            nlapiSendEmail(-5, salesrep_email, 'The opportunity '+newname+' has entered Won/Closed stage', x, null, null,records);
+        	}
+
+ nlapiLogExecution('ERROR',' before check customer change'+newcust+oldcust);
+        
+        if  ( newcust != oldcust)
+        {
+                    nlapiLogExecution('ERROR','customer change'+newcust+oldcust);
+        
+        	 project.setFieldValue('parent',newcust);
+        	
+        }  
+        var p = nlapiSubmitRecord(project);
+        nlapiLogExecution('DEBUG', 'project record updated successfully', 'ID = ' + p);
+    	}  //newproj
+
+
+if ( update_res_alloc == 'Y')
+{
+ nlapiLogExecution('DEBUG','deleted allocations, creating new');
+                   var project = nlapiLoadRecord('job',newRecord.getFieldValue('job'));
+
+			 //Recreate new allocations
+			 var filter = new nlobjSearchFilter('internalid', 'job', 'is', project.getId() ); 
+			 var resourceID = new nlobjSearchColumn('resource', 'projecttaskassignment','group');
+			 var start_date = new nlobjSearchColumn('startdate','projecttaskassignment','min');
+			 var end_date = new nlobjSearchColumn('enddate','projecttaskassignment','max');
+			 var hours = new nlobjSearchColumn('estimatedwork', 'projecttaskassignment', 'sum');
+			
+			 var sortcol = resourceID.setSort();
+			 var searchResults =  nlapiSearchRecord('projecttask', null,filter,[resourceID,start_date,end_date,hours,sortcol]);
+			 if (searchResults)
+				   {
+				   for ( var i = 0; searchResults != null && i < searchResults.length; i++ )
+                                                                            { 
+				  var result = searchResults[i] ;
+				  var hours = result.getValue('estimatedwork', 'projecttaskassignment','sum');
+				  if ( hours > 0 )
+				  {	  
+				  var resourceID = result.getValue('resource', 'projecttaskassignment','group');
+				  nlapiLogExecution('DEBUG','resource id'+resourceID);
+				  
+				  var stdt = result.getValue('startdate','projecttaskassignment','min');
+				  var enddt = result.getValue('enddate','projecttaskassignment','max');
+				  nlapiLogExecution('DEBUG','tot hours '+hours+'St date '+stdt+'End date '+enddt);
+				 
+				  var resrec = nlapiCreateRecord('resourceallocation');
+					resrec.setFieldValue('allocationresource',resourceID);
+					resrec.setFieldValue('project',project.getId());
+					resrec.setFieldValue('allocationamount',hours);
+					resrec.setFieldValue('startdate',stdt);
+					resrec.setFieldValue('enddate',enddt);
+					resrec.setFieldValue('allocationtype',2);
+					nlapiSubmitRecord(resrec);
+				  } // hours > 0
+			                     }// loop for
+				  } //search
+
+}//update_res
+    }   //!create
+} // end ue
